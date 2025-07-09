@@ -64,3 +64,6 @@ __pycache__/
 # Real test files
 .env
 test-output/ 
+
+build-output/
+build-tests/
