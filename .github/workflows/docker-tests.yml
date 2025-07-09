@@ -1,0 +1,58 @@
+name: Docker Integration Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  docker-integration-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y sqlite3 jq
+    
+    - name: Run Docker integration tests
+      run: |
+        chmod +x run-docker-tests.sh
+        ./run-docker-tests.sh
+    
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: docker-test-results
+        path: |
+          docker/test-results/test-summary.json
+          docker/test-results/provisioning.status
+          docker/test-results/pytest-report.json
+          docker/test-results/artifacts/
+    
+    - name: Upload logs on failure
+      if: failure()
+      run: |
+        docker compose -f docker-compose.test.yml logs > docker-logs.txt
+        echo "=== Docker Logs ===" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        cat docker-logs.txt >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+    
+    - name: Test Summary
+      if: always()
+      run: |
+        if [ -f "docker/test-results/test-summary.json" ]; then
+          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          cat docker/test-results/test-summary.json | jq '.' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        fi 

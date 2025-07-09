@@ -1,0 +1,31 @@
+[Unit]
+Description=AWS Greengrass Provisioning Service
+Documentation=https://aws.amazon.com/greengrass/
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/greengrass_provisioning_service -d /opt/greengrass/config/devices.db -g /greengrass/v2
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=greengrass-provisioning
+
+# Restart configuration
+Restart=on-failure
+RestartSec=30
+StartLimitInterval=200
+StartLimitBurst=5
+
+# Security settings
+User=root
+Group=root
+PrivateTmp=true
+NoNewPrivileges=true
+
+# Environment
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+[Install]
+WantedBy=multi-user.target 

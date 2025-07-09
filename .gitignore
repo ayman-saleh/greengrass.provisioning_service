@@ -1,0 +1,66 @@
+# Build directories
+build/
+cmake-build-*/
+out/
+
+# Conan files
+conan.lock
+conanbuildinfo.*
+conaninfo.txt
+graph_info.json
+.conan/
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+Testing/
+
+# Compiled files
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Log files
+*.log
+
+# Test results
+test_results/
+
+# Status files
+*.status
+
+# Temporary files
+*.tmp
+.DS_Store
+
+# Generated documentation
+docs/html/
+docs/latex/
+
+# Binary
+greengrass_provisioning_service
+greengrass_provisioning_tests
+
+# Docker test artifacts
+docker/test-results/
+docker/test-data/*.db
+docker/mock-aws/s3-data/greengrass/
+*.pyc
+__pycache__/
+
+# Real test files
+.env
+test-output/ 

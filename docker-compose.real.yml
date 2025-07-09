@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  greengrass-real-test:
+    build:
+      context: .
+      dockerfile: docker/real-test/Dockerfile
+    container_name: greengrass-real-test
+    environment:
+      # AWS credentials can be provided here or via .env file
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+      
+      # IoT Thing configuration
+      - IOT_THING_NAME=${IOT_THING_NAME}
+      - IOT_ENDPOINT=${IOT_ENDPOINT}
+      - IOT_ROLE_ALIAS=${IOT_ROLE_ALIAS}
+      - IOT_ROLE_ALIAS_ENDPOINT=${IOT_ROLE_ALIAS_ENDPOINT}
+      
+      # Device configuration
+      - DEVICE_ID=${DEVICE_ID}
+      - DEVICE_MAC_ADDRESS=${DEVICE_MAC_ADDRESS}
+      - DEVICE_SERIAL_NUMBER=${DEVICE_SERIAL_NUMBER}
+      
+      # Certificate paths or content
+      - DEVICE_CERTIFICATE_PEM_PATH=${DEVICE_CERTIFICATE_PEM_PATH}
+      - DEVICE_PRIVATE_KEY_PATH=${DEVICE_PRIVATE_KEY_PATH}
+      - ROOT_CA_PATH=${ROOT_CA_PATH}
+      - DEVICE_CERTIFICATE_PEM_BASE64=${DEVICE_CERTIFICATE_PEM_BASE64}
+      - DEVICE_PRIVATE_KEY_BASE64=${DEVICE_PRIVATE_KEY_BASE64}
+      - ROOT_CA_BASE64=${ROOT_CA_BASE64}
+      
+      # Greengrass configuration
+      - GREENGRASS_NUCLEUS_VERSION=${GREENGRASS_NUCLEUS_VERSION:-2.12.1}
+      - GREENGRASS_DEPLOYMENT_GROUP=${GREENGRASS_DEPLOYMENT_GROUP}
+      - GREENGRASS_INITIAL_COMPONENTS=${GREENGRASS_INITIAL_COMPONENTS}
+      
+      # Optional configuration
+      - MQTT_PORT=${MQTT_PORT:-8883}
+      - PROXY_URL=${PROXY_URL}
+      - CUSTOM_DOMAIN=${CUSTOM_DOMAIN}
+      
+      # Test configuration
+      - CLEANUP_ON_SUCCESS=${CLEANUP_ON_SUCCESS:-true}
+      - CLEANUP_ON_FAILURE=${CLEANUP_ON_FAILURE:-false}
+      - VERBOSE_LOGGING=${VERBOSE_LOGGING:-true}
+    volumes:
+      # Mount .env file if it exists
+      - ./.env:/workspace/.env:ro
+      
+      # Mount certificate files if using file paths
+      - ${CERTIFICATE_MOUNT_PATH:-/dev/null}:/certs:ro
+      
+      # Mount AWS credentials if using AWS CLI configuration
+      - ~/.aws:/root/.aws:ro
+      
+      # Optional: Mount output directory for logs and artifacts
+      - ./test-output:/workspace/test-output
+    privileged: true
+    stdin_open: true
+    tty: true
+    networks:
+      - greengrass-test
+    command: ["/scripts/run-real-test.sh"]
+
+networks:
+  greengrass-test:
+    driver: bridge 

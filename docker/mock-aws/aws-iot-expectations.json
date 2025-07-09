@@ -1,0 +1,107 @@
+[
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/",
+      "headers": {
+        "Host": [".*"]
+      }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": {
+        "message": "Mock AWS IoT Endpoint"
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "HEAD",
+      "path": "/",
+      "headers": {
+        "Host": [".*"]
+      }
+    },
+    "httpResponse": {
+      "statusCode": 200
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/role-aliases/GreengrassV2TokenExchangeRole/credentials"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": {
+        "credentials": {
+          "accessKeyId": "ASIAMOCKEXAMPLEKEY",
+          "secretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYMOCKEXAMPLE",
+          "sessionToken": "AQoDYXdzEJr...<remainder of mock session token>",
+          "expiration": "2024-12-31T23:59:59Z"
+        }
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/greengrass/discover/thing/.*"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": {
+        "GGGroups": [
+          {
+            "GGGroupId": "mock-group-id",
+            "Cores": [
+              {
+                "thingArn": "arn:aws:iot:us-east-1:123456789012:thing/TestGreengrassThing",
+                "Connectivity": [
+                  {
+                    "id": "mock-connectivity-id",
+                    "hostAddress": "mock-aws-iot",
+                    "portNumber": 8883,
+                    "metadata": ""
+                  }
+                ]
+              }
+            ],
+            "CAs": [
+              "-----BEGIN CERTIFICATE-----\nMIIDQTCCAimgAwIBAgITBmyfz5m/jAo54vB4ikPmljZbyjANBgkqhkiG9w0BAQsF\n-----END CERTIFICATE-----"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/mqtt"
+    },
+    "httpResponse": {
+      "statusCode": 200
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "GET",
+      "path": "/thing/.*/shadow"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": {
+        "state": {
+          "desired": {},
+          "reported": {
+            "connected": true
+          }
+        },
+        "metadata": {},
+        "version": 1,
+        "timestamp": 1642000000
+      }
+    }
+  }
+] 
