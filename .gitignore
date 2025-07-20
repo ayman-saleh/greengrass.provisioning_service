@@ -67,3 +67,5 @@ test-output/
 
 build-output/
 build-tests/
+
+CMakeUserPresets.json

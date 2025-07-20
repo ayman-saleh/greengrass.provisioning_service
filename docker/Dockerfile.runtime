@@ -1,0 +1,26 @@
+# Runtime-only Ubuntu Docker image for Greengrass Provisioning Service
+# This image expects the binary to be built locally and mounted at runtime
+
+FROM ubuntu:24.04
+
+# Install runtime dependencies only
+RUN apt-get update && apt-get install -y \
+    libstdc++6 \
+    libc6 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create a directory for the mounted binary
+RUN mkdir -p /app
+
+WORKDIR /app
+
+# Add metadata
+LABEL maintainer="Greengrass Provisioning Service" \
+      description="Runtime container for locally-built Greengrass Provisioning Service" \
+      version="1.0"
+
+# The binary will be mounted at runtime
+# Example: docker run -v ./build:/app/build image_name
+
+# Set the entrypoint to the binary location in the mounted build directory
+CMD ["/app/build/greengrass_provisioning_service"] 
